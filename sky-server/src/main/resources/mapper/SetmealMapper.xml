@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.SetmealMapper">
+
+
+    <insert id="insert" parameterType="Setmeal" useGeneratedKeys="true" keyProperty="id">
+        insert into setmeal
+        (category_id, name, price, status, description, image, create_time, update_time, create_user, update_user)
+        values (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime},
+                #{createUser}, #{updateUser})
+    </insert>
+    <update id="update">
+        update setmeal
+        <set>
+            <!-- 动态更新分类 ID -->
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <!-- 动态更新套餐名称 -->
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <!-- 动态更新套餐价格 -->
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <!-- 动态更新套餐状态 -->
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <!-- 动态更新套餐描述信息 -->
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <!-- 动态更新套餐图片 -->
+            <if test="image != null">
+                image = #{image},
+            </if>
+            <!-- 动态更新更新时间 -->
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <!-- 动态更新更新用户 -->
+            <if test="updateUser != null">
+                update_user = #{updateUser}
+            </if>
+        </set>
+        <!-- 根据 ID 确定要更新的记录 -->
+        where id = #{id}
+    </update>
+
+
+    <delete id="deleteBench">
+        delete from setmeal
+        where id in
+        <foreach collection="ids" item="id" separator="," close=")" open="(">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
+            select * from setmeal
+            <where>
+                <if test="name!=null">
+                    name like concat('%',#{name},'%')
+                </if>
+                <if test="status!=null">
+                    and status=#{status}
+                </if>
+                <if test="categoryId!=null">
+                    and category_id=#{categoryId}
+                </if>
+            </where>
+    </select>
+
+</mapper>
